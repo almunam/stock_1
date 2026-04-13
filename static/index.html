@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalScope Market Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Real-time-ish market intelligence</p>
+        <h1>SignalScope</h1>
+        <p class="hero-copy">
+          Track live stock movement, inspect price structure, and generate quick trading signals from Yahoo Finance market data.
+        </p>
+      </div>
+      <form id="controls" class="controls">
+        <label>
+          <span>Symbol</span>
+          <input id="symbolInput" type="text" value="AAPL" maxlength="10" spellcheck="false" />
+        </label>
+        <label>
+          <span>Range</span>
+          <select id="rangeInput">
+            <option value="1d">1 Day</option>
+            <option value="5d">5 Days</option>
+            <option value="1mo">1 Month</option>
+            <option value="3mo">3 Months</option>
+            <option value="6mo">6 Months</option>
+            <option value="1y">1 Year</option>
+          </select>
+        </label>
+        <label>
+          <span>Interval</span>
+          <select id="intervalInput">
+            <option value="5m">5 Minutes</option>
+            <option value="15m">15 Minutes</option>
+            <option value="1h">1 Hour</option>
+            <option value="1d">1 Day</option>
+          </select>
+        </label>
+        <button type="submit">Fetch Data</button>
+      </form>
+    </section>
+
+    <section class="grid top-grid">
+      <article class="card headline-card">
+        <div class="card-head">
+          <span class="card-kicker">Quote</span>
+          <span id="marketState" class="pill neutral">Loading</span>
+        </div>
+        <h2 id="companyName">Waiting for symbol</h2>
+        <div class="price-row">
+          <span id="priceValue" class="price-value">--</span>
+          <span id="changeValue" class="price-change neutral">--</span>
+        </div>
+        <div id="metaStats" class="meta-stats"></div>
+      </article>
+
+      <article class="card signal-card">
+        <div class="card-head">
+          <span class="card-kicker">Signal Engine</span>
+          <span id="confidenceBadge" class="pill neutral">--%</span>
+        </div>
+        <div class="signal-wrap">
+          <div id="signalValue" class="signal-value neutral">HOLD</div>
+          <div>
+            <div id="trendValue" class="trend-value">Trend: --</div>
+            <p id="signalSummary" class="signal-summary">Fetching analysis...</p>
+          </div>
+        </div>
+        <ul id="reasonsList" class="reasons-list"></ul>
+      </article>
+    </section>
+
+    <section class="grid main-grid">
+      <article class="card chart-card">
+        <div class="card-head">
+          <span class="card-kicker">Price Chart</span>
+          <span id="chartMeta" class="chart-meta">--</span>
+        </div>
+        <svg id="chart" viewBox="0 0 900 320" preserveAspectRatio="none" aria-label="Price chart"></svg>
+      </article>
+
+      <article class="card indicator-card">
+        <div class="card-head">
+          <span class="card-kicker">Indicators</span>
+          <span class="pill neutral">Rule-Based</span>
+        </div>
+        <div id="indicatorGrid" class="indicator-grid"></div>
+      </article>
+    </section>
+
+    <section class="card raw-card">
+      <div class="card-head">
+        <span class="card-kicker">Workflow Notes</span>
+      </div>
+      <div class="notes">
+        <p>This dashboard uses Yahoo Finance endpoints as a lightweight upstream data source.</p>
+        <p>Signals here are rules-based and helpful for screening, not financial advice or a production trading strategy.</p>
+        <p>The backend is ready for you to add more models, backtests, alerts, and your own signal rules.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
