@@ -255,7 +255,12 @@ def compute_analysis(chart_data, quote_data=None):
 
 def fetch_quote(symbol: str):
     params = urlencode({"symbols": symbol})
-    raw = fetch_json(f"{YAHOO_QUOTE_URL}?{params}")
+    try:
+        raw = fetch_json(f"{YAHOO_QUOTE_URL}?{params}")
+    except HTTPError as exc:
+        if exc.code == 401:
+            return None
+        raise
     result = ((raw.get("quoteResponse") or {}).get("result") or [])
     if not result:
         return None
@@ -275,6 +280,30 @@ def fetch_quote(symbol: str):
         "fiftyTwoWeekLow": quote.get("fiftyTwoWeekLow"),
         "averageDailyVolume3Month": quote.get("averageDailyVolume3Month"),
         "marketCap": quote.get("marketCap"),
+    }
+
+
+def build_quote_from_chart(chart_data, quote_data=None):
+    if quote_data:
+        return quote_data
+
+    points = chart_data.get("points") or []
+    latest_volume = points[-1].get("volume") if points else None
+
+    return {
+        "symbol": chart_data.get("symbol"),
+        "shortName": chart_data.get("symbol"),
+        "longName": chart_data.get("symbol"),
+        "currency": chart_data.get("currency"),
+        "marketState": chart_data.get("exchangeName") or "Available",
+        "regularMarketPrice": chart_data.get("regularMarketPrice"),
+        "regularMarketChange": None,
+        "regularMarketChangePercent": None,
+        "regularMarketVolume": latest_volume,
+        "fiftyTwoWeekHigh": None,
+        "fiftyTwoWeekLow": None,
+        "averageDailyVolume3Month": None,
+        "marketCap": None,
     }
 
 
@@ -307,8 +336,8 @@ class StockDashboardHandler(BaseHTTPRequestHandler):
         interval = query.get("interval", ["5m"])[0]
 
         try:
-            quote_data = fetch_quote(symbol)
             chart_data = fetch_chart(symbol, range_value, interval)
+            quote_data = build_quote_from_chart(chart_data, fetch_quote(symbol))
             analysis = compute_analysis(chart_data, quote_data)
             self.send_json(
                 {
