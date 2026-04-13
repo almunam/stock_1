@@ -23,6 +23,22 @@ python server.py
 
 Then open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
+## Deploy on Render
+
+1. Push the repository to GitHub.
+2. In Render, choose `New +` -> `Blueprint`.
+3. Select this repository: `almunam/stock_1`.
+4. Render will detect `render.yaml` and create the web service.
+5. Deploy the service and open the generated Render URL.
+
+The app uses the `PORT` environment variable provided by Render and binds to `0.0.0.0` in production.
+
+## Alternative deploy option
+
+- Railway can also run this project.
+- Set the start command to `python server.py`.
+- Railway will inject `PORT` automatically, and the app will use it.
+
 ## Notes
 
 - Yahoo Finance data can be delayed depending on the symbol and market.
